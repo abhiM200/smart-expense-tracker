@@ -2,6 +2,8 @@
 
 A full-stack, in-memory Spring Boot + Thymeleaf application to track expenses, filter by category, and view a monthly summary.
 
+> **Note on project structure:** Following Java/Maven convention, this project's tests are located at `src/test/java/com/expensetracker/` rather than a root-level `tests/` folder, since Maven's build tooling requires this exact path to discover and run tests correctly. Running `./mvnw test` will execute all tests from this location.
+
 ## Prerequisites
 - Java 17+
 - Maven (only for local dev)
