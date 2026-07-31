@@ -4,79 +4,144 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Expense Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Smart Expense Tracker</h1>
-
-        <div class="card">
-            <h2>Add New Expense</h2>
-            <form id="expenseForm">
-                <div class="form-group">
-                    <label for="title">Title:</label>
-                    <input type="text" id="title" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount:</label>
-                    <input type="number" id="amount" name="amount" step="0.01" min="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="category">Category:</label>
-                    <input type="text" id="category" name="category" required>
-                </div>
-                <div class="form-group">
-                    <label for="date">Date:</label>
-                    <input type="date" id="date" name="date" required>
-                </div>
-                <button type="submit">Add Expense</button>
-            </form>
-            <div id="formMessage"></div>
-        </div>
-
-        <div class="card">
-            <h2>Filter & Summary</h2>
-            <div class="filter-section">
-                <label for="filterCategory">Category Filter:</label>
-                <input type="text" id="filterCategory" placeholder="e.g. Food">
-                <button type="button" onclick="loadData()">Filter</button>
-                <button type="button" onclick="document.getElementById('filterCategory').value=''; loadData()">Clear</button>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-wallet"></i>
+                <span>ExpenseTracker</span>
             </div>
-            
-            <div class="summary-section">
-                <h3>Overall Total: $<span id="totalAmount">0.00</span></h3>
-                
-                <h3>Monthly Summary:</h3>
-                <div id="monthlySummary"></div>
+            <div class="nav-user">
+                <div class="avatar">A</div>
             </div>
         </div>
+    </header>
 
-        <div class="card">
-            <h2>All Expenses</h2>
-            <table id="expensesTable">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Amount</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Populated by JS -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-    
-    <footer style="text-align: center; margin-top: 20px; color: #7f8c8d;">
-        <p>Developed by Abhishek</p>
+    <main class="dashboard-container">
+        <!-- Sidebar / Form Column -->
+        <aside class="sidebar">
+            <div class="card glass-card form-card">
+                <h2><i class="fa-solid fa-plus-circle icon-header"></i> Add Expense</h2>
+                <form id="expenseForm">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" placeholder="What did you buy?" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="amount">Amount ($)</label>
+                            <input type="number" id="amount" name="amount" step="0.01" min="0.01" placeholder="0.00" required>
+                        </div>
+                        <div class="form-group half">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="" disabled selected>Select category</option>
+                            <option value="Food">Food</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-check"></i> Save Expense
+                    </button>
+                </form>
+                <div id="formMessage"></div>
+            </div>
+
+            <div class="card glass-card filter-card">
+                <h2><i class="fa-solid fa-filter icon-header"></i> Filter</h2>
+                <div class="form-group">
+                    <label for="filterCategory">By Category:</label>
+                    <div class="filter-controls">
+                        <select id="filterCategory">
+                            <option value="">All Categories</option>
+                            <option value="Food">Food</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <button type="button" class="btn-secondary" onclick="loadData()"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Column -->
+        <section class="main-content">
+            <!-- Dashboard Stats -->
+            <div class="stats-grid">
+                <div class="stat-card glass-card">
+                    <div class="stat-icon bg-indigo">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Total Expenses</h3>
+                        <p class="stat-value">$<span id="totalAmount">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Summary Section -->
+            <div class="card glass-card summary-wrapper">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-calendar-alt icon-header"></i> Monthly Summary</h2>
+                </div>
+                <div class="monthly-summary-container" id="monthlySummary">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="card glass-card table-wrapper">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-list icon-header"></i> Recent Transactions</h2>
+                </div>
+                <div class="table-responsive">
+                    <table id="expensesTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th class="text-right">Amount</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>Developed by Abhishek &copy; 2026</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Default date to today
             document.getElementById('date').valueAsDate = new Date();
             loadData();
         });
@@ -91,6 +156,10 @@
                 date: document.getElementById('date').value
             };
 
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
             try {
                 const response = await fetch('/api/expenses', {
                     method: 'POST',
@@ -101,23 +170,44 @@
                 if (response.ok) {
                     document.getElementById('expenseForm').reset();
                     document.getElementById('date').valueAsDate = new Date();
-                    document.getElementById('formMessage').textContent = 'Expense added successfully!';
-                    document.getElementById('formMessage').style.color = 'green';
+                    showMessage('Expense added successfully!', 'success');
                     loadData();
                 } else {
-                    const error = await response.json();
-                    document.getElementById('formMessage').textContent = 'Failed to add expense. Check inputs.';
-                    document.getElementById('formMessage').style.color = 'red';
+                    showMessage('Failed to add expense. Check inputs.', 'error');
                 }
             } catch (error) {
                 console.error("Error adding expense:", error);
+                showMessage('Network error occurred.', 'error');
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Expense';
+                btn.disabled = false;
             }
         });
+
+        function showMessage(msg, type) {
+            const msgDiv = document.getElementById('formMessage');
+            msgDiv.textContent = msg;
+            msgDiv.className = `msg ${type} show`;
+            setTimeout(() => {
+                msgDiv.className = 'msg';
+            }, 3000);
+        }
 
         async function loadData() {
             loadExpenses();
             loadTotal();
             loadMonthlySummary();
+        }
+
+        function getCategoryIcon(cat) {
+            const icons = {
+                'Food': '<i class="fa-solid fa-utensils text-orange"></i>',
+                'Travel': '<i class="fa-solid fa-plane text-blue"></i>',
+                'Utilities': '<i class="fa-solid fa-bolt text-yellow"></i>',
+                'Entertainment': '<i class="fa-solid fa-gamepad text-purple"></i>',
+                'Shopping': '<i class="fa-solid fa-bag-shopping text-pink"></i>'
+            };
+            return icons[cat] || '<i class="fa-solid fa-tag text-gray"></i>';
         }
 
         async function loadExpenses() {
@@ -133,14 +223,27 @@
             const tbody = document.querySelector('#expensesTable tbody');
             tbody.innerHTML = '';
             
+            if (expenses.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center empty-state">No expenses found</td></tr>';
+                return;
+            }
+
             expenses.forEach(exp => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${exp.date}</td>
-                    <td>${exp.title}</td>
-                    <td>${exp.category}</td>
-                    <td>$${exp.amount.toFixed(2)}</td>
-                    <td><button class="btn-delete" onclick="deleteExpense(${exp.id})">Delete</button></td>
+                    <td class="date-cell">${exp.date}</td>
+                    <td class="title-cell">${exp.title}</td>
+                    <td class="cat-cell">
+                        <span class="cat-badge">
+                            ${getCategoryIcon(exp.category)} ${exp.category}
+                        </span>
+                    </td>
+                    <td class="amount-cell text-right">$${exp.amount.toFixed(2)}</td>
+                    <td class="action-cell text-center">
+                        <button class="btn-icon delete" onclick="deleteExpense(${exp.id})" title="Delete">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -166,22 +269,32 @@
             summaryDiv.innerHTML = '';
             
             if (Object.keys(summary).length === 0) {
-                summaryDiv.innerHTML = '<p>No data available.</p>';
+                summaryDiv.innerHTML = '<div class="empty-state">No monthly data available.</div>';
                 return;
             }
             
             for (const [month, data] of Object.entries(summary)) {
                 const monthCard = document.createElement('div');
-                monthCard.className = 'month-card';
+                monthCard.className = 'month-stat-card';
                 
                 let categoriesHtml = '';
                 for (const [cat, amt] of Object.entries(data.byCategory)) {
-                    categoriesHtml += `<li>${cat}: $${amt.toFixed(2)}</li>`;
+                    categoriesHtml += `
+                        <div class="cat-stat-row">
+                            <span>${getCategoryIcon(cat)} <span class="cat-name">${cat}</span></span>
+                            <span class="cat-amt">$${amt.toFixed(2)}</span>
+                        </div>
+                    `;
                 }
                 
                 monthCard.innerHTML = `
-                    <h4>${month} - Total: $${data.total.toFixed(2)}</h4>
-                    <ul>${categoriesHtml}</ul>
+                    <div class="month-header">
+                        <h4>${month}</h4>
+                        <span class="month-total">$${data.total.toFixed(2)}</span>
+                    </div>
+                    <div class="month-breakdown">
+                        ${categoriesHtml}
+                    </div>
                 `;
                 summaryDiv.appendChild(monthCard);
             }
