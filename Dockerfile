@@ -7,6 +7,7 @@ COPY mvnw .
 COPY mvnw.cmd .
 COPY src ./src
 # Run package without tests
+RUN chmod +x ./mvnw
 RUN ./mvnw clean package -DskipTests
 
 # Stage 2: Create the runtime image
